@@ -41,7 +41,7 @@ public class ToXmlFunction extends BasicFunction {
      */
     public final static FunctionSignature toXml
             = new FunctionSignature(
-                    new QName("viewer", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX), "",
+                    new QName("to-xml", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX), "",
                     new SequenceType[]{
                         new FunctionParameterSequenceType("filename", Type.STRING, Cardinality.EXACTLY_ONE, "")},
                     new SequenceType(Type.DOCUMENT, Cardinality.ZERO_OR_ONE));
