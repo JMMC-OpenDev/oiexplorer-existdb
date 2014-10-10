@@ -4,6 +4,8 @@
 package fr.jmmc.exist;
 
 import fr.jmmc.oitools.OIFitsViewer;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,7 +21,9 @@ import org.exist.xquery.ErrorCodes;
 import org.exist.xquery.FunctionSignature;
 import org.exist.xquery.XPathException;
 import org.exist.xquery.XQueryContext;
+import org.exist.xquery.value.BinaryValue;
 import org.exist.xquery.value.FunctionParameterSequenceType;
+import org.exist.xquery.value.Item;
 import org.exist.xquery.value.Sequence;
 import org.exist.xquery.value.SequenceType;
 import org.exist.xquery.value.Type;
@@ -37,18 +41,18 @@ public class Viewer extends BasicFunction {
     /** declare some xquery functions
      */
     public final static FunctionSignature signatures[] = {
-        /* oi:to-xml(filename as xs:string) as node()? */
+        /* oi:to-xml($data as item()) as node()? */
         new FunctionSignature(
             new QName("to-xml", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX), "",
             new SequenceType[]{
-                new FunctionParameterSequenceType("filename", Type.STRING, Cardinality.EXACTLY_ONE, "")
+                new FunctionParameterSequenceType("data", Type.ANY_TYPE, Cardinality.EXACTLY_ONE, "")
             },
             new SequenceType(Type.DOCUMENT, Cardinality.ZERO_OR_ONE)),
-        /* oi:check(filename as xs:string) as xs:string? */
+        /* oi:check($data as item()) as empty() */
         new FunctionSignature(
             new QName("check", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX), "",
             new SequenceType[]{
-                new FunctionParameterSequenceType("filename", Type.STRING, Cardinality.EXACTLY_ONE, "")
+                new FunctionParameterSequenceType("data", Type.ANY_TYPE, Cardinality.EXACTLY_ONE, "")
             },
             new SequenceType(Type.EMPTY, Cardinality.ZERO)),
     };
@@ -86,12 +90,36 @@ public class Viewer extends BasicFunction {
             return Sequence.EMPTY_SEQUENCE;
         }
 
-        // Get location from input args
-        // TODO can we extend to multiple locations at once
-        // TODO complete oitools to handle inputstream instead of File only access...
-        final String filename = args[0].itemAt(0).getStringValue();
-        if (filename.length() == 0) {
-            return Sequence.EMPTY_SEQUENCE;
+        final String filename;
+        File tmpFile = null;
+        final Item param = args[0].itemAt(0);
+        if (param.getType() == Type.BASE64_BINARY) {
+            // Prepare a temporary file where to save binary data to process
+            try {
+                tmpFile = File.createTempFile("jmmc-oiexplorer", "viewer");
+            } catch (IOException ioe) {
+                throw new XPathException(this, ioe.getMessage(), ioe);
+            }
+            filename = tmpFile.getAbsolutePath();
+
+            logger.info("Create temporary file " + filename);
+
+            // Fill in the temporary file with binary data
+            BinaryValue bin = (BinaryValue) param;
+            try {
+                FileOutputStream fos = new FileOutputStream(tmpFile);
+                bin.streamBinaryTo(fos);
+                fos.close();
+            } catch (IOException ioe) {
+                throw new XPathException(this, ioe.getMessage(), ioe);
+            }
+        } else {
+            // Get location from input args
+            // TODO can we extend to multiple locations at once
+            filename = param.getStringValue();
+            if (filename.length() == 0) {
+                return Sequence.EMPTY_SEQUENCE;
+            }
         }
 
         final boolean outputXml = isCalledAs("to-xml");
@@ -101,11 +129,13 @@ public class Viewer extends BasicFunction {
 
         String output = null;
         try {
+            logger.info("Process data from " + filename);
             output = v.process(filename);
         } catch (final Exception e) {
             throw new XPathException(this, "Can't read oifits properly: " + e.getMessage(), e);
         }
 
+        final Sequence ret;
         if (outputXml) {
             // Parse given xml string to provide a document object
             final SAXAdapter adapter = new SAXAdapter(context);
@@ -124,9 +154,17 @@ public class Viewer extends BasicFunction {
                 throw new XPathException(this, ErrorCodes.EXXQDY0002, "Error while parsing XML: " + e.getMessage(), args[0], e);
             }
 
-            return (DocumentImpl) adapter.getDocument();
+            ret = (DocumentImpl) adapter.getDocument();
         } else {
-            return Sequence.EMPTY_SEQUENCE;
+            ret = Sequence.EMPTY_SEQUENCE;
         }
+
+        if (tmpFile != null) {
+            // Clean up
+            logger.info("Delete temporary file " + filename);
+            tmpFile.delete();
+        }
+        
+        return ret;
     }
 }
