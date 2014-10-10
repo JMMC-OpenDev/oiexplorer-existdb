@@ -44,6 +44,13 @@ public class Viewer extends BasicFunction {
                 new FunctionParameterSequenceType("filename", Type.STRING, Cardinality.EXACTLY_ONE, "")
             },
             new SequenceType(Type.DOCUMENT, Cardinality.ZERO_OR_ONE)),
+        /* oi:check(filename as xs:string) as xs:string? */
+        new FunctionSignature(
+            new QName("check", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX), "",
+            new SequenceType[]{
+                new FunctionParameterSequenceType("filename", Type.STRING, Cardinality.EXACTLY_ONE, "")
+            },
+            new SequenceType(Type.EMPTY, Cardinality.ZERO)),
     };
 
     /** Logger (existdb extensions uses log4j) */
@@ -87,8 +94,10 @@ public class Viewer extends BasicFunction {
             return Sequence.EMPTY_SEQUENCE;
         }
 
+        final boolean outputXml = isCalledAs("to-xml");
+        
         // Get our viewer reference
-        final OIFitsViewer v = new OIFitsViewer(true, true);
+        final OIFitsViewer v = new OIFitsViewer(outputXml, true, true);
 
         String output = null;
         try {
@@ -97,23 +106,27 @@ public class Viewer extends BasicFunction {
             throw new XPathException(this, "Can't read oifits properly: " + e.getMessage(), e);
         }
 
-        // Parse given xml string to provide a document object
-        final SAXAdapter adapter = new SAXAdapter(context);
-        try {
-            final InputSource src = new InputSource(new StringReader(output));
+        if (outputXml) {
+            // Parse given xml string to provide a document object
+            final SAXAdapter adapter = new SAXAdapter(context);
+            try {
+                final InputSource src = new InputSource(new StringReader(output));
 
-            XMLReader xr = factory.newSAXParser().getXMLReader();
-            xr.setContentHandler(adapter);
-            xr.setProperty(Namespaces.SAX_LEXICAL_HANDLER, adapter);
-            xr.parse(src);
-        } catch (final ParserConfigurationException e) {
-            throw new XPathException(this, ErrorCodes.EXXQDY0002, "Error while constructing XML parser: " + e.getMessage(), args[0], e);
-        } catch (final SAXException e) {
-            throw new XPathException(this, ErrorCodes.EXXQDY0002, "Error while parsing XML: " + e.getMessage(), args[0], e);
-        } catch (final IOException e) {
-            throw new XPathException(this, ErrorCodes.EXXQDY0002, "Error while parsing XML: " + e.getMessage(), args[0], e);
+                XMLReader xr = factory.newSAXParser().getXMLReader();
+                xr.setContentHandler(adapter);
+                xr.setProperty(Namespaces.SAX_LEXICAL_HANDLER, adapter);
+                xr.parse(src);
+            } catch (final ParserConfigurationException e) {
+                throw new XPathException(this, ErrorCodes.EXXQDY0002, "Error while constructing XML parser: " + e.getMessage(), args[0], e);
+            } catch (final SAXException e) {
+                throw new XPathException(this, ErrorCodes.EXXQDY0002, "Error while parsing XML: " + e.getMessage(), args[0], e);
+            } catch (final IOException e) {
+                throw new XPathException(this, ErrorCodes.EXXQDY0002, "Error while parsing XML: " + e.getMessage(), args[0], e);
+            }
+
+            return (DocumentImpl) adapter.getDocument();
+        } else {
+            return Sequence.EMPTY_SEQUENCE;
         }
-
-        return (DocumentImpl) adapter.getDocument();
     }
 }

@@ -21,10 +21,11 @@ public class OIExplorerModule extends AbstractInternalModule {
 
     private final static FunctionDef[] functions = {
         new FunctionDef(Viewer.signatures[0], Viewer.class),
+        new FunctionDef(Viewer.signatures[1], Viewer.class),
     };
 
     public OIExplorerModule(Map<String, List<? extends Object>> parameters) throws XPathException {
-        super(functions, parameters, true);
+        super(functions, parameters);
     }
 
     @Override
