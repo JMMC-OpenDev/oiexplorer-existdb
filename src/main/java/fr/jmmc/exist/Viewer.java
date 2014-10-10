@@ -38,22 +38,28 @@ import org.xml.sax.XMLReader;
  */
 public class Viewer extends BasicFunction {
 
+    private static final SequenceType[] viewerParam = new SequenceType[] {
+        new FunctionParameterSequenceType("data", Type.ANY_TYPE, Cardinality.EXACTLY_ONE,
+            "An URL to an OIFits file or a binary chunk (xs:base64Binary) to process")
+    };
+
     /** declare some xquery functions
      */
     public final static FunctionSignature signatures[] = {
         /* oi:to-xml($data as item()) as node()? */
         new FunctionSignature(
-            new QName("to-xml", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX), "",
-            new SequenceType[]{
-                new FunctionParameterSequenceType("data", Type.ANY_TYPE, Cardinality.EXACTLY_ONE, "")
-            },
+            new QName("to-xml", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX),
+            "Parse OIFits data from URL or binary chunk. It makes use of the "
+            + "JMMC's oitools library to output a XML description of the data. "
+            + "An error is raised if the data does not follow the OIFits format.",
+            viewerParam,
             new SequenceType(Type.DOCUMENT, Cardinality.ZERO_OR_ONE)),
         /* oi:check($data as item()) as empty() */
         new FunctionSignature(
-            new QName("check", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX), "",
-            new SequenceType[]{
-                new FunctionParameterSequenceType("data", Type.ANY_TYPE, Cardinality.EXACTLY_ONE, "")
-            },
+            new QName("check", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX),
+            "Try parsing OIFits data from URL or binary chunk. It raises an "
+            + "error if the contents is not recognized as OIFits data.",
+            viewerParam,
             new SequenceType(Type.EMPTY, Cardinality.ZERO)),
     };
 

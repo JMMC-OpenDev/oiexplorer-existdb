@@ -40,7 +40,7 @@ public class OIExplorerModule extends AbstractInternalModule {
 
     @Override
     public String getDescription() {
-        return "description";
+        return "A module for interacting with OIExplorer Core from XQuery in eXist-db.";
     }
 
     @Override
