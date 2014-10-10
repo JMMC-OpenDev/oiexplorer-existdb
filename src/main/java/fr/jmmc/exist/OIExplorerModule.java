@@ -19,7 +19,7 @@ public class OIExplorerModule extends AbstractInternalModule {
     public final static String PREFIX = "oi";
     
     private final static FunctionDef[] functions = {
-	new FunctionDef(ToXmlFunction.toXml, ToXmlFunction.class)
+	new FunctionDef(Viewer.signatures[0], Viewer.class),
     };
     
     public OIExplorerModule(Map<String, List<? extends Object>> parameters) throws XPathException {

@@ -34,27 +34,28 @@ import org.xml.sax.XMLReader;
  *
  * @author Patrick Bernaud, Guillaume Mella
  */
-public class ToXmlFunction extends BasicFunction {
+public class Viewer extends BasicFunction {
 
     /** declare some xquery functions
-     * oi:viewer(filename as xs:string) as node()?
      */
-    public final static FunctionSignature toXml
-            = new FunctionSignature(
-                    new QName("to-xml", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX), "",
-                    new SequenceType[]{
-                        new FunctionParameterSequenceType("filename", Type.STRING, Cardinality.EXACTLY_ONE, "")},
-                    new SequenceType(Type.DOCUMENT, Cardinality.ZERO_OR_ONE));
+    public final static FunctionSignature signatures[] = {
+        /* oi:to-xml(filename as xs:string) as node()? */
+        new FunctionSignature(
+                new QName("to-xml", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX), "",
+                new SequenceType[]{
+                    new FunctionParameterSequenceType("filename", Type.STRING, Cardinality.EXACTLY_ONE, "")},
+                new SequenceType(Type.DOCUMENT, Cardinality.ZERO_OR_ONE)),
+    };
 
     /** Logger (existdb extensions uses log4j) */
-    protected static final Logger logger = Logger.getLogger(ToXmlFunction.class);
+    protected static final Logger logger = Logger.getLogger(Viewer.class);
 
     /**
-     * Constructor of ViewerFunction to provide the extension code.
+     * Constructor of Viewer to provide the extension code.
      * @param context
      * @param signature
      */
-    public ToXmlFunction(XQueryContext context, FunctionSignature signature) {
+    public Viewer(XQueryContext context, FunctionSignature signature) {
 	super(context, signature);
     }
 
