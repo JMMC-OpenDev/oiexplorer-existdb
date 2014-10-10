@@ -97,7 +97,7 @@ public class Viewer extends BasicFunction {
         final boolean outputXml = isCalledAs("to-xml");
         
         // Get our viewer reference
-        final OIFitsViewer v = new OIFitsViewer(outputXml, true, true);
+        final OIFitsViewer v = new OIFitsViewer(outputXml, true, false);
 
         String output = null;
         try {
