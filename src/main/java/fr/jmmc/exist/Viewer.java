@@ -23,6 +23,7 @@ import org.exist.xquery.XPathException;
 import org.exist.xquery.XQueryContext;
 import org.exist.xquery.value.BinaryValue;
 import org.exist.xquery.value.FunctionParameterSequenceType;
+import org.exist.xquery.value.FunctionReturnSequenceType;
 import org.exist.xquery.value.Item;
 import org.exist.xquery.value.Sequence;
 import org.exist.xquery.value.SequenceType;
@@ -53,14 +54,16 @@ public class Viewer extends BasicFunction {
             + "JMMC's oitools library to output a XML description of the data. "
             + "An error is raised if the data does not follow the OIFits format.",
             viewerParam,
-            new SequenceType(Type.DOCUMENT, Cardinality.ZERO_OR_ONE)),
+            new FunctionReturnSequenceType(Type.DOCUMENT, Cardinality.ZERO_OR_ONE,
+                "an XML description of the OIFits content")),
         /* oi:check($data as item()) as empty() */
         new FunctionSignature(
             new QName("check", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX),
             "Try parsing OIFits data from URL or binary chunk. It raises an "
             + "error if the contents is not recognized as OIFits data.",
             viewerParam,
-            new SequenceType(Type.EMPTY, Cardinality.ZERO)),
+            new FunctionReturnSequenceType(Type.EMPTY, Cardinality.ZERO,
+                "empty")),
     };
 
     /** Logger (existdb extensions uses log4j) */
@@ -92,10 +95,6 @@ public class Viewer extends BasicFunction {
      */
     @Override
     public Sequence eval(Sequence[] args, Sequence contextSequence) throws XPathException {
-        if (args[0].getItemCount() == 0) {
-            return Sequence.EMPTY_SEQUENCE;
-        }
-
         final String filename;
         File tmpFile = null;
         final Item param = args[0].itemAt(0);
