@@ -9,7 +9,7 @@
         <version>TRUNK</version>
         <!--  please install first parent pom from jMCS/parent-pom directory -->
     </parent>
-    
+
     <groupId>fr.jmmc.oiexplorer</groupId>
     <artifactId>oiexplorer-existdb</artifactId>
 
@@ -17,7 +17,7 @@
     <name>OIFits Explorer Existdb Extension</name>
 
     <properties>
-        <!-- do copy dependencies (oitools is not present in existdb ditributiont ) -->
+        <!-- do copy dependencies (oitools is not present in existdb distribution ) -->
         <mdep.skip>false</mdep.skip>
     </properties>
 
@@ -39,20 +39,20 @@
         <!-- eXistDB Library -->
 
         <dependency>
-          <groupId>org.exist-db</groupId>
-          <artifactId>exist-exist</artifactId>
-          <version>2.1</version>
+            <groupId>org.exist-db</groupId>
+            <artifactId>exist-exist</artifactId>
+            <version>2.2</version>
         </dependency>
 
 
         <dependency>
-          <groupId>org.exist-db</groupId>
-          <artifactId>exist-xmldb</artifactId>
-          <version>2.1</version>
+            <groupId>org.exist-db</groupId>
+            <artifactId>exist-xmldb</artifactId>
+            <version>2.2</version>
         </dependency>
 
         <!--  log4j -->
-        
+
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>

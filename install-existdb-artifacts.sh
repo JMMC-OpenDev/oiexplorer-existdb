@@ -7,7 +7,7 @@ basedir=$existdbpaths
 if [ ! -e "$basedir" ]
 then
   echo ${existdbpaths[@]}
-  echo "Error: can't find existdb installation dir. export USER_EXISTDB_ROOT with directory path of your existd installation"
+  echo "Error: can't find existdb installation dir. export USER_EXISTDB_ROOT with directory path of your existdb installation"
   exit 1
 fi
 
