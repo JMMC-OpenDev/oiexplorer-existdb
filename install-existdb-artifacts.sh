@@ -1,8 +1,11 @@
 #!/bin/bash
 
 # try to find the existdb location from pre defined values and use first one
-existdbpaths=( $(ls -ad $HOME/eXist $HOME/exist-db $HOME/existdb $USER_EXISTDB_ROOT 2> /dev/null) )
+searchPaths=$(echo $HOME/e{X,x}ist{-db,db,})
+existdbpaths=( $(ls -ad  $HOME/e{X,x}ist{-db,db,} $USER_EXISTDB_ROOT 2> /dev/null) )
 basedir=$existdbpaths
+
+echo "# searchPaths=$searchPaths"
 
 if [ ! -e "$basedir" ]
 then
@@ -27,7 +30,7 @@ do
   echo "$cmd" 
 done
 
-echo "# Please cut and paste this section in your pom file"
+echo "# Please cut and paste this section or check consistency with your pom file"
 echo
 echo " <dependencies>"
 echo
