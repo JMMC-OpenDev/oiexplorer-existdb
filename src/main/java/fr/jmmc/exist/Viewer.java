@@ -13,8 +13,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.log4j.Logger;
 import org.exist.Namespaces;
 import org.exist.dom.QName;
-import org.exist.memtree.DocumentImpl;
-import org.exist.memtree.SAXAdapter;
+import org.exist.dom.memtree.DocumentImpl;
+import org.exist.dom.memtree.SAXAdapter;
 import org.exist.xquery.BasicFunction;
 import org.exist.xquery.Cardinality;
 import org.exist.xquery.ErrorCodes;
@@ -39,9 +39,9 @@ import org.xml.sax.XMLReader;
  */
 public class Viewer extends BasicFunction {
 
-    private static final SequenceType[] viewerParam = new SequenceType[] {
+    private static final SequenceType[] viewerParam = new SequenceType[]{
         new FunctionParameterSequenceType("data", Type.ANY_TYPE, Cardinality.EXACTLY_ONE,
-            "An URL to an OIFits file or a binary chunk (xs:base64Binary) to process")
+        "An URL to an OIFits file or a binary chunk (xs:base64Binary) to process")
     };
 
     /** declare some xquery functions
@@ -49,22 +49,21 @@ public class Viewer extends BasicFunction {
     public final static FunctionSignature signatures[] = {
         /* oi:to-xml($data as item()) as node()? */
         new FunctionSignature(
-            new QName("to-xml", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX),
-            "Parse OIFits data from URL or binary chunk. It makes use of the "
-            + "JMMC's oitools library to output a XML description of the data. "
-            + "An error is raised if the data does not follow the OIFits format.",
-            viewerParam,
-            new FunctionReturnSequenceType(Type.DOCUMENT, Cardinality.ZERO_OR_ONE,
-                "an XML description of the OIFits content")),
+        new QName("to-xml", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX),
+        "Parse OIFits data from URL or binary chunk. It makes use of the "
+        + "JMMC's oitools library to output a XML description of the data. "
+        + "An error is raised if the data does not follow the OIFits format.",
+        viewerParam,
+        new FunctionReturnSequenceType(Type.DOCUMENT, Cardinality.ZERO_OR_ONE,
+        "an XML description of the OIFits content")),
         /* oi:check($data as item()) as empty() */
         new FunctionSignature(
-            new QName("check", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX),
-            "Try parsing OIFits data from URL or binary chunk. It raises an "
-            + "error if the contents is not recognized as OIFits data.",
-            viewerParam,
-            new FunctionReturnSequenceType(Type.EMPTY, Cardinality.ZERO,
-                "empty")),
-    };
+        new QName("check", OIExplorerModule.NAMESPACE_URI, OIExplorerModule.PREFIX),
+        "Try parsing OIFits data from URL or binary chunk. It raises an "
+        + "error if the contents is not recognized as OIFits data.",
+        viewerParam,
+        new FunctionReturnSequenceType(Type.EMPTY, Cardinality.ZERO,
+        "empty")),};
 
     /** Logger (existdb extensions uses log4j) */
     protected static final Logger logger = Logger.getLogger(Viewer.class);
@@ -128,7 +127,7 @@ public class Viewer extends BasicFunction {
         }
 
         final boolean outputXml = isCalledAs("to-xml");
-        
+
         // Get our viewer reference
         final OIFitsViewer v = new OIFitsViewer(outputXml, true, false);
 
@@ -169,7 +168,7 @@ public class Viewer extends BasicFunction {
             logger.info("Delete temporary file " + filename);
             tmpFile.delete();
         }
-        
+
         return ret;
     }
 }
