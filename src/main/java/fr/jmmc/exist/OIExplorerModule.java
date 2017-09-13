@@ -19,13 +19,13 @@ public class OIExplorerModule extends AbstractInternalModule {
 
     public final static String PREFIX = "oi";
 
-    private final static FunctionDef[] functions = {
-        new FunctionDef(Viewer.signatures[0], Viewer.class),
-        new FunctionDef(Viewer.signatures[1], Viewer.class),
+    private final static FunctionDef[] FUNCTIONS = {
+        new FunctionDef(Viewer.VIEWER_SIGNATURES[0], Viewer.class),
+        new FunctionDef(Viewer.VIEWER_SIGNATURES[1], Viewer.class),
     };
 
     public OIExplorerModule(Map<String, List<? extends Object>> parameters) throws XPathException {
-        super(functions, parameters);
+        super(FUNCTIONS, parameters);
     }
 
     @Override
