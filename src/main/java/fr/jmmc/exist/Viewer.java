@@ -43,7 +43,7 @@ public class Viewer extends BasicFunction {
         "An URL to an OIFits file or a binary chunk (xs:base64Binary) to process")
     };
 
-    /** 
+    /**
      * declare some xquery functions
      */
     public final static FunctionSignature[] VIEWER_SIGNATURES = {
@@ -146,7 +146,7 @@ public class Viewer extends BasicFunction {
             // Get our viewer reference
             final OIFitsViewer oiFitsViewer = new OIFitsViewer(outputXml, true, false);
 
-            logger.info("Process data from " + absFilePath);
+            logger.info("Process data from " + absFilePath + " (xml mode : " + outputXml + ")");
 
             String output = null;
             try {
