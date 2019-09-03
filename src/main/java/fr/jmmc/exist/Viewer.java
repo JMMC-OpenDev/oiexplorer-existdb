@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.exist.Namespaces;
 import org.exist.dom.QName;
 import org.exist.dom.memtree.SAXAdapter;
@@ -69,7 +70,7 @@ public class Viewer extends BasicFunction {
     };
 
     /** Logger (existdb extensions uses log4j) */
-    protected static final Logger logger = Logger.getLogger(Viewer.class);
+    private final static Logger logger = LogManager.getLogger(Viewer.class);
 
     /* members */
     private final SAXParserFactory factory;
